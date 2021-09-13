@@ -40,9 +40,14 @@
             <td><%= urls[url] %></td>
           </tr>
           <td>
+            <th>
+            <a href="/urls/<%= url %>">
+              <button type="button" class="btn btn-outline-primary">Edit</button> </th>
+              <th>
             <form method="POST" action="/urls/<%= url %>/delete">
               <button type="submit" class="btn btn-outline-danger">Delete</button>
               </form>
+              </th>
           </td>
         <% } %>
       </tbody>
