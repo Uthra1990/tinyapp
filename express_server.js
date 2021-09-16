@@ -94,6 +94,14 @@ app.post("/urls/:id", (req, res) => {
     res.redirect('/urls');
 });
 
+app.get("/register", (req, res) => {
+  console.log("register")
+  const templateVars = {
+    username : req.cookies["username"],
+  };
+  res.render("urls_register", templateVars);
+  });
+
 function generateRandomString() {
   let result           = '';
   let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
