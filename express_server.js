@@ -126,7 +126,23 @@ app.get("/register", (req, res) => {
       email : userEmail,
       password : userPassword
     }
-    //console.log(id,email,password)
+    
+    if(userEmail === "" || userPassword === "") {
+      res.send(400, "please enter a valid Email and Password")
+    }
+
+    const alreadyExistUser = function(email)
+    {
+      for (const user in users) {
+        if (users[user].email === email) {
+          return true
+        }
+      } return false;
+    };
+
+    if (alreadyExistUser(userEmail)) {
+      res.send(400, "An account already exists with the same EmailID");
+    };
     res.cookie('user_id', newUserID)
     res.redirect("/urls");
   });
