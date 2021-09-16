@@ -8,12 +8,11 @@
         <div class="navbar-nav">
           <a class="nav-item nav-link" href="/urls">My URLs</a>
           <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-          <span><%= username%></span>
         </div>
-        <% if (username) { %> 
+        <% if (user) { %> 
           <form method="POST" action="/logout">
             <div class="form-group mb-2">
-              <label>Logged In As: <%= username %></label>
+              <label>Logged In As: <%= user.email %></label>
               <button type="submit" style="background-color:transparent; border-color:darkslategray; color:darkslategray" class="btn btn-primary">Logout</button>
             </div>
           </form>
