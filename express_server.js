@@ -32,6 +32,12 @@ app.post("/login", (req, res) => {
   res.redirect('/urls');
 });
 
+app.get("/login", (req, res) => {
+    const templateVars = {
+      user: users[req.cookies["user_id"]],
+    };
+    res.render("urls_login", templateVars);
+});
 
 app.get("/", (req, res) => {
   res.send("Hello!");
@@ -128,20 +134,20 @@ app.get("/register", (req, res) => {
     }
     
     if(userEmail === "" || userPassword === "") {
-      res.send(400, "please enter a valid Email and Password")
+      res.status(400).send( "please enter a valid Email and Password")
     }
 
-    const alreadyExistUser = function(email)
-    {
-      for (const user in users) {
-        if (users[user].email === email) {
-          return true
+    const alreadyExistUser = function(email, userDatabase) {
+      for (const user in userDatabase) {
+        if (userDatabase[user].email === email) {
+          return true;
         }
-      } return false;
+      }
+      return false;
     };
 
     if (alreadyExistUser(userEmail)) {
-      res.send(400, "An account already exists with the same EmailID");
+      res.status(400).send("An account already exists with the same EmailID");
     };
     res.cookie('user_id', newUserID)
     res.redirect("/urls");
