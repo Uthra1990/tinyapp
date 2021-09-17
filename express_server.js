@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
+const {findUser,generateRandomString} = require('./helpers')
 
 app.set("view engine", "ejs");
 const cookieParser = require('cookie-parser');
@@ -16,8 +17,8 @@ const urlDatabase = {
 const users = { 
   "userRandomID": {
     id: "userRandomID", 
-    email: "user@example.com", 
-    password: "purple-monkey-dinosaur"
+    email: "1@1.com", 
+    password: "1"
   },
  "user2RandomID": {
     id: "user2RandomID", 
@@ -27,10 +28,27 @@ const users = {
 }
 
 app.post("/login", (req, res) => {
-  const username = req.body.username;
-  res.cookie('username', username);
-  res.redirect('/urls');
+  const email = req.body.email;
+  const password = req.body.password;
+if(!email || !password){
+  res.status(403).send("Please enter a Email and a Password")
+}
+else if(!findUser(email,users)) {
+  res.status(403).send("Please register")
+}
+else{
+  const user = findUser(email,users) 
+  if(password !== user.password){
+    res.status(403).send("Invalid Password")
+  } 
+  else{
+    res.cookie('user_id', user.id)
+    res.redirect('/urls')
+  }
+  }
 });
+
+
 
 app.get("/login", (req, res) => {
     const templateVars = {
@@ -125,43 +143,29 @@ app.get("/register", (req, res) => {
   app.post("/register", (req, res) => {
     const userEmail = req.body.email;
     const userPassword = req.body.password;
+    
+    
 
+    if(userEmail === "" || userPassword === "") {
+      res.status(400).send( "Please enter a valid Email and Password")
+    }
+
+    
+    else if(findUser(userEmail,users)) {
+      res.status(400).send("An account already exists with the same EmailID");
+    }
+    else {
     const newUserID = generateRandomString();
     users[newUserID] = {
       id : newUserID,
       email : userEmail,
       password : userPassword
     }
-    
-    if(userEmail === "" || userPassword === "") {
-      res.status(400).send( "please enter a valid Email and Password")
-    }
-
-    const alreadyExistUser = function(email, userDatabase) {
-      for (const user in userDatabase) {
-        if (userDatabase[user].email === email) {
-          return true;
-        }
-      }
-      return false;
-    };
-
-    if (alreadyExistUser(userEmail)) {
-      res.status(400).send("An account already exists with the same EmailID");
-    };
     res.cookie('user_id', newUserID)
     res.redirect("/urls");
+  }
   });
 
-function generateRandomString() {
-  let result           = '';
-  let characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let charactersLength = characters.length;
-  for ( var i = 0; i < 6; i++ ) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
- }
- return result;
-}
 
 
 
