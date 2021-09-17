@@ -17,4 +17,20 @@ function generateRandomString() {
     return false;
   }
 
-  module.exports = {generateRandomString , findUser }
+  const urlForUser = function(user,db) {
+      const userUrls = {}
+     if(!user){
+         return userUrls;
+     }
+     else{
+      for(let url in db) {
+          if(db[url].user_id=== user.id){
+              userUrls[url] = db[url]
+          }
+          
+        }
+    }
+        return userUrls
+  } 
+
+  module.exports = {generateRandomString , findUser , urlForUser}

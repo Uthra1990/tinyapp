@@ -1,7 +1,8 @@
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
-const {findUser,generateRandomString} = require('./helpers')
+const {findUser,generateRandomString,urlForUser} = require('./helpers')
+
 
 app.set("view engine", "ejs");
 const cookieParser = require('cookie-parser');
@@ -10,8 +11,15 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {
+    longURL : "http://www.lighthouselabs.ca",
+    user_id : "userRandomID"
+  } ,
+  "9sm5xK": {
+    longURL : "http://www.google.com",
+    user_id : "userRandomID"
+  } 
+  
 };
 
 const users = { 
@@ -75,11 +83,14 @@ app.get("/urls.json", (req, res) => {
 
   
   app.get("/urls", (req, res) => {
+    const user = users[req.cookies["user_id"]]
     const templateVars = {
-      urls: urlDatabase,
+      urls: urlForUser(user,urlDatabase),
       user : users[req.cookies["user_id"]]
     };
-    res.render('urls_index', templateVars);
+    
+      res.render('urls_index', templateVars);
+    
   });
 
   app.get("/urls/new", (req, res) => {
@@ -87,12 +98,22 @@ app.get("/urls.json", (req, res) => {
     const templateVars = {
       user : users[req.cookies["user_id"]]
     };
+    if(templateVars.user) {
     res.render("urls_new", templateVars);
     res.redirect("urls");
+    }
+    else{
+      res.redirect("/login");
+    }
   });
 
   app.get("/urls/:shortURL", (req, res) => {
-    const templateVars = { shortURL: req.params.shortURL, longURL: req.params.longURL, user : users[req.cookies["user_id"]], };
+    const shortURL = req.params.shortURL
+    const longURL = urlDatabase[shortURL].longURL
+    const templateVars = {
+       shortURL,
+       longURL, 
+       user : users[req.cookies["user_id"]], };
     res.render("urls_show", templateVars);
   });
 
@@ -133,7 +154,6 @@ app.post("/urls/:id", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  console.log("register",req.cookies["user_id"])
   const templateVars = {
     user : users[req.cookies["user_id"]],
   };
@@ -156,6 +176,7 @@ app.get("/register", (req, res) => {
     }
     else {
     const newUserID = generateRandomString();
+    console.log("------------------",newUserID)
     users[newUserID] = {
       id : newUserID,
       email : userEmail,
