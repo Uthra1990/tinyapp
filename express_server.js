@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
+const bcrypt = require('bcryptjs');
 const {findUser,generateRandomString,urlForUser} = require('./helpers')
 
 
@@ -35,6 +36,11 @@ const users = {
   }
 }
 
+
+//const password = "1"; // found in the req.params object
+//const hashedPassword = bcrypt.hashSync(password, 10);
+
+
 app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -46,7 +52,7 @@ else if(!findUser(email,users)) {
 }
 else{
   const user = findUser(email,users) 
-  if(password !== user.password){
+  if(!bcrypt.compareSync(password, users[user.id].password)){
     res.status(403).send("Invalid Password")
   } 
   else{
@@ -186,6 +192,7 @@ app.get("/register", (req, res) => {
   app.post("/register", (req, res) => {
     const userEmail = req.body.email;
     const userPassword = req.body.password;
+    const hashedPassword = bcrypt.hashSync(password, 10);
     
     
 
@@ -199,11 +206,11 @@ app.get("/register", (req, res) => {
     }
     else {
     const newUserID = generateRandomString();
-    console.log("------------------",newUserID)
+   //console.log("------------------",newUserID)
     users[newUserID] = {
       id : newUserID,
       email : userEmail,
-      password : userPassword
+      password : bcrypt.hashSync(userPassword, 10),
     }
     res.cookie('user_id', newUserID)
     res.redirect("/urls");
