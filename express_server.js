@@ -132,7 +132,15 @@ app.get("/urls.json", (req, res) => {
 
   app.post("/urls/:shortURL/delete", (req, res) => {
     const shortURL = req.params.shortURL;
-    delete urlDatabase[shortURL];
+    const user = users[req.cookies["user_id"]]
+    if(!user){
+      res.status(403).send("Please Login to delete")
+    }
+    else{
+      if(urlDatabase[shortURL].user_id === user.id){
+        delete urlDatabase[shortURL];
+      }
+    } 
     res.redirect('/urls');
     
   });
@@ -148,10 +156,25 @@ app.get("/urls.json", (req, res) => {
 
 app.post("/urls/:id", (req, res) => {
   const shortURL = req.params.id;
-  const newURL = req.body.newURL
-    urlDatabase[shortURL] = newURL
-    res.redirect('/urls');
+  const user = users[req.cookies["user_id"]]
+    if(!user){
+      res.status(403).send("Please Login to edit")
+    }
+    else{
+      if(urlDatabase[shortURL].user_id === user.id){
+        const newURL = req.body.newURL
+        urlDatabase[shortURL].longURL = newURL;
+        res.redirect('/urls'); 
+      }
+    }
+  
 });
+
+//123:www.google.com
+/*"b2xVn2": {
+    longURL : "http://www.lighthouselabs.ca",
+    user_id : "userRandomID"
+  } */
 
 app.get("/register", (req, res) => {
   const templateVars = {
