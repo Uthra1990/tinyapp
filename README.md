@@ -5,19 +5,19 @@ TinyApp is a full stack web application that allows users to shorten long URLs. 
 ## Final Product
 
 URLs Home page
-(https://github.com/Uthra1990/tinyapp/blob/master/docs/urls_homepage.png)
+![Screenshots URL Homepage](https://github.com/Uthra1990/tinyapp/blob/master/docs/urls_homepage.png)
 
 URL's Display
-(https://github.com/Uthra1990/tinyapp/blob/master/docs/urls_display.png)
+![Screenshots URL Display](https://github.com/Uthra1990/tinyapp/blob/master/docs/urls_display.png)
 
 Create URL
-(https://github.com/Uthra1990/tinyapp/blob/master/docs/Create_URL.png)
+![Screenshots create URL](https://github.com/Uthra1990/tinyapp/blob/master/docs/Create_URL.png)
 
 Edit URL
-(https://github.com/Uthra1990/tinyapp/blob/master/docs/Edit_URL.png)
+![Screenshots Edit URL](https://github.com/Uthra1990/tinyapp/blob/master/docs/Edit_URL.png)
 
 Register User
-(https://github.com/Uthra1990/tinyapp/blob/master/docs/Register_User.png)
+![Screenshots Register User](https://github.com/Uthra1990/tinyapp/blob/master/docs/Register_User.png)
 
 
 
