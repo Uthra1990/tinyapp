@@ -99,30 +99,18 @@ app.get("/urls.json", (req, res) => {
   
   app.get("/urls", (req, res) => {
     // const user = users[req.cookies["user_id"]]
-    console.log("redirect")
-    // console.log("urls",urlDatabase)
-
-
+    // console.log("redirect")
     const user_id = req.session.user_id;
-    console.log('*****',user_id)
-    if(!user_id){
-      return res.redirect("/login")
-    }
     const user = users[user_id]
-    if(!user){
-      req.session = null;
-      return res.redirect("/login") 
-    }
-
-    console.log('______user', user)
+  
     const templateVars = {
       urls: urlForUser(user,urlDatabase),
       user
     };
     
-      res.render('urls_index', templateVars);
+     res.render('urls_index', templateVars);
     
-  });
+   });
 
   app.get("/urls/new", (req, res) => {
     // res.render("urls_new");
@@ -160,16 +148,18 @@ app.get("/urls.json", (req, res) => {
   app.post("/logout", (req, res) => {
     console.log("logout")
     req.session = null;
-    res.redirect('/login');
+    res.redirect('/urls');
   });
 
   app.post("/urls", (req, res) => {
+    if(req.session.user_id){
     const longURL = req.body.longURL
     const shortURL = generateRandomString() 
     const user_id = req.session.user_id
     urlDatabase[shortURL] = { longURL, user_id}
+    };
      console.log('>>>>>>>>>>>>>>>', urlDatabase)
-    res.redirect(`/urls`);
+     res.redirect('/urls');
   });
 
   app.post("/urls/:shortURL/delete", (req, res) => {
